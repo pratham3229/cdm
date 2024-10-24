@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Path to SQLite database
-DATABASE = 'downtime_data.db'
+DATABASE = 'downtime_data_mod.db'
 
 # Initialize the SQLite database (create table if it doesn't exist)
 def init_db():
