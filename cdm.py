@@ -24,28 +24,28 @@ db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]
 
 # Save downtime data to the MongoDB database
-@app.route('/save_downtime', methods=['POST'])
-def save_downtime():
-    data = request.json
-    start_time = data.get('start_time')
-    end_time = data.get('end_time')
-    reason = data.get('reason')
-    chipper = data.get('chipper', 'Unknown Chipper')  # Default to 'Unknown Chipper' if not provided
+# @app.route('/save_downtime', methods=['POST'])
+# def save_downtime():
+#     data = request.json
+#     start_time = data.get('start_time')
+#     end_time = data.get('end_time')
+#     reason = data.get('reason')
+#     chipper = data.get('chipper', 'Unknown Chipper')  # Default to 'Unknown Chipper' if not provided
 
-    # Check if any required fields are missing
-    if not start_time or not end_time or not reason:
-        return jsonify({'error': 'start_time, end_time, and reason are required fields.'}), 400
+#     # Check if any required fields are missing
+#     if not start_time or not end_time or not reason:
+#         return jsonify({'error': 'start_time, end_time, and reason are required fields.'}), 400
 
-    # Insert the data into the MongoDB collection
-    downtime_record = {
-        'start_time': start_time,
-        'end_time': end_time,
-        'reason': reason,
-        'chipper': chipper
-    }
-    collection.insert_one(downtime_record)
+#     # Insert the data into the MongoDB collection
+#     downtime_record = {
+#         'start_time': start_time,
+#         'end_time': end_time,
+#         'reason': reason,
+#         'chipper': chipper
+#     }
+#     collection.insert_one(downtime_record)
 
-    return jsonify({'message': 'Downtime saved successfully!'})
+#     return jsonify({'message': 'Downtime saved successfully!'})
 
 # Fetch all downtime records
 @app.route('/get_downtime', methods=['GET'])
