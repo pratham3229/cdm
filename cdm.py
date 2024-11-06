@@ -66,6 +66,20 @@ def get_downtime():
         })
 
     return jsonify(downtime_list)
+    
+@app.route('/update_entry/<string:custom_id>', methods=['PUT'])
+def update_entry(custom_id):
+    data = request.json  # Get data from the request body
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    # Update the entry based on the custom_id
+    result = collection.update_one({"custom_id": custom_id}, {"$set": data})
+    
+    if result.matched_count > 0:
+        return jsonify({"message": "Entry updated successfully"}), 200
+    else:
+        return jsonify({"error": "Entry not found"}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
