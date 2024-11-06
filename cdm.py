@@ -3,7 +3,6 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from urllib.parse import quote_plus
 import os
-from bson.objectid import ObjectId
 
 app = Flask(__name__)
 CORS(app)
@@ -28,6 +27,7 @@ collection = db[COLLECTION_NAME]
 @app.route('/save_downtime', methods=['POST'])
 def save_downtime():
     data = request.json
+    entry_id = data.get('entry_id')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
     reason = data.get('reason')
@@ -39,6 +39,7 @@ def save_downtime():
 
     # Insert the data into the MongoDB collection
     downtime_record = {
+        'entry_id': entry_id,
         'start_time': start_time,
         'end_time': end_time,
         'reason': reason,
@@ -57,7 +58,7 @@ def get_downtime():
     downtime_list = []
     for record in data:
         downtime_list.append({
-            'id': str(record['_id']),  # Convert ObjectId to string
+            'entry_id': record['entry_id'],  # Convert ObjectId to string
             'start_time': record['start_time'],
             'end_time': record['end_time'],
             'reason': record['reason'],
@@ -65,47 +66,6 @@ def get_downtime():
         })
 
     return jsonify(downtime_list)
-
-@app.route('/update_downtime', methods=['PUT'])
-def update_downtime():
-    try:
-        # Get the JSON data from the request
-        data = request.get_json()
-
-        # Extract the record ID and updated fields from the request
-        record_id = data.get('_id')
-        start_time = data.get('start_time')
-        end_time = data.get('end_time')
-        reason = data.get('reason')
-        chipper = data.get('chipper')
-
-        # Ensure record_id is provided
-        if not record_id:
-            return jsonify({"error": "Record ID is required"}), 400
-
-        # Prepare the update data
-        update_data = {
-            "start_time": start_time,
-            "end_time": end_time,
-            "reason": reason,
-            "chipper": chipper
-        }
-
-        # Update the record in MongoDB
-        result = collection.update_one(
-            {"_id": ObjectId(record_id)},
-            {"$set": update_data}
-        )
-
-        # Check if the update was successful
-        if result.modified_count == 0:
-            return jsonify({"error": "Record not found or no changes made"}), 404
-
-        return jsonify({"message": "Downtime entry updated successfully!"}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
