@@ -74,7 +74,7 @@ def update_entry(custom_id):
         return jsonify({"error": "No data provided"}), 400
     
     # Update the entry based on the custom_id
-    result = collection.update_one({"custom_id": custom_id}, {"$set": data})
+    result = collection.update_one({"entry_id": custom_id}, {"$set": data})
     
     if result.matched_count > 0:
         return jsonify({"message": "Entry updated successfully"}), 200
