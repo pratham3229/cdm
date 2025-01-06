@@ -30,18 +30,20 @@ def save_downtime():
     entry_id = data.get('entry_id')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
+    category = data.get('category')
     reason = data.get('reason')
     chipper = data.get('chipper', 'Unknown Chipper')  # Default to 'Unknown Chipper' if not provided
 
     # Check if any required fields are missing
-    if not start_time or not end_time or not reason:
-        return jsonify({'error': 'start_time, end_time, and reason are required fields.'}), 400
+    if not start_time or not end_time or not reason or not category:
+        return jsonify({'error': 'start_time, end_time,category and reason are required fields.'}), 400
 
     # Insert the data into the MongoDB collection
     downtime_record = {
         'entry_id': entry_id,
         'start_time': start_time,
         'end_time': end_time,
+        'category' : category,
         'reason': reason,
         'chipper': chipper
     }
@@ -61,6 +63,7 @@ def get_downtime():
             'entry_id': record['entry_id'],  # Convert ObjectId to string
             'start_time': record['start_time'],
             'end_time': record['end_time'],
+            'category':record['category'],
             'reason': record['reason'],
             'chipper': record.get('chipper', 'Unknown Chipper')
         })
